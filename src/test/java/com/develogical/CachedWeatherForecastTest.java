@@ -13,6 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -36,5 +37,12 @@ public class CachedWeatherForecastTest {
     public void testRetrieveForecast() throws Exception {
         Forecast forecastFor = cachedWeatherForecaster.weatherForecastFor(Region.LONDON, Day.FRIDAY);
         assertEquals(forecast, forecastFor);
+    }
+
+    @Test
+    public void testRetrieveForecastFromCache() throws Exception {
+        cachedWeatherForecaster.weatherForecastFor(Region.LONDON, Day.FRIDAY);
+        cachedWeatherForecaster.weatherForecastFor(Region.LONDON, Day.FRIDAY);
+        verify(weatherForecaster).weatherForecastFor(Region.LONDON, Day.FRIDAY);
     }
 }

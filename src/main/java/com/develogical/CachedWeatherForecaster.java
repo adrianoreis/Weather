@@ -4,12 +4,16 @@ import com.weather.Day;
 import com.weather.Forecast;
 import com.weather.Region;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by adriano on 12-7-17.
  */
-public class CachedWeatherForecaster implements WeatherForecaster{
+public class CachedWeatherForecaster implements WeatherForecaster {
 
     private final WeatherForecaster weatherForecaster;
+    private final Map<String, Forecast> cache = new HashMap<>();
 
     public CachedWeatherForecaster(WeatherForecaster weatherForecaster) {
         this.weatherForecaster = weatherForecaster;
@@ -17,6 +21,11 @@ public class CachedWeatherForecaster implements WeatherForecaster{
 
     @Override
     public Forecast weatherForecastFor(Region region, Day day) {
-        return weatherForecaster.weatherForecastFor(region, day);
+        if (cache.containsKey(region.name() + day.name())) {
+            return cache.get(region.name() + day.name());
+        }
+        Forecast forecast = weatherForecaster.weatherForecastFor(region, day);
+        cache.put(region.name() + day.name(), forecast);
+        return forecast;
     }
 }
