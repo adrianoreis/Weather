@@ -36,10 +36,6 @@ public class CachedWeatherForecaster implements WeatherForecaster {
             Map<Instant, Forecast> val = cache.get(region.name() + day.name());
             if (val.keySet().iterator().next().isAfter(now)) {
                 return val.values().iterator().next();
-            } else {
-                Map<Instant, Forecast> newForecast = getForecast(region, day, now);
-                cache.put(region.name()+day.name(), newForecast);
-                return newForecast.values().iterator().next();
             }
         }
 
