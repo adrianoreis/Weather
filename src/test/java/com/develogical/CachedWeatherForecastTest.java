@@ -13,6 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,5 +45,15 @@ public class CachedWeatherForecastTest {
         cachedWeatherForecaster.weatherForecastFor(Region.LONDON, Day.FRIDAY);
         cachedWeatherForecaster.weatherForecastFor(Region.LONDON, Day.FRIDAY);
         verify(weatherForecaster).weatherForecastFor(Region.LONDON, Day.FRIDAY);
+    }
+
+    @Test
+    public void testCacheIsResetAfterThreeEntries() throws Exception {
+        cachedWeatherForecaster.weatherForecastFor(Region.LONDON, Day.FRIDAY);
+        cachedWeatherForecaster.weatherForecastFor(Region.LONDON, Day.SATURDAY);
+        cachedWeatherForecaster.weatherForecastFor(Region.LONDON, Day.SUNDAY);
+        cachedWeatherForecaster.weatherForecastFor(Region.LONDON, Day.MONDAY);
+        cachedWeatherForecaster.weatherForecastFor(Region.LONDON, Day.FRIDAY);
+        verify(weatherForecaster, times(2)).weatherForecastFor(Region.LONDON, Day.FRIDAY);
     }
 }
