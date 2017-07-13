@@ -37,19 +37,22 @@ public class CachedWeatherForecaster implements WeatherForecaster {
             if (val.keySet().iterator().next().isAfter(now)) {
                 return val.values().iterator().next();
             } else {
-                Map<Instant, Forecast> newForecast = new HashMap<>();
-                Forecast forecast = weatherForecaster.weatherForecastFor(region, day);
-                newForecast.put(now.plusSeconds(3600), forecast);
-                cache.replace(region.name()+day.name(), newForecast);
-                return forecast;
+                Map<Instant, Forecast> newForecast = getForecast(region, day, now);
+                cache.put(region.name()+day.name(), newForecast);
+                return newForecast.values().iterator().next();
             }
         }
 
-        Forecast forecast = weatherForecaster.weatherForecastFor(region, day);
 
-        Map<Instant, Forecast> value = new HashMap<>();
-        value.put(now.plusSeconds(3600), forecast);
-        cache.put(region.name()+day.name(), value);
-        return forecast;
+        Map<Instant, Forecast> newForecast = getForecast(region, day, now);
+        cache.put(region.name() + day.name(), newForecast);
+        return newForecast.values().iterator().next();
+    }
+
+    private Map<Instant,Forecast> getForecast(Region region, Day day, Instant now) {
+        Map<Instant, Forecast> newForecast = new HashMap<>();
+        Forecast forecast = weatherForecaster.weatherForecastFor(region, day);
+        newForecast.put(now.plusSeconds(3600), forecast);
+        return  newForecast;
     }
 }
